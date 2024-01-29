@@ -8,22 +8,22 @@ import 'package:flutter_harjoitus/views/app_6.dart';
 
 class MainView extends StatelessWidget {
   const MainView({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-          return Scaffold(
-        appBar: AppBar(
-          title: const Text('App Name'),
-          ),
-        body:
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Row(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('App Name'),
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
+      body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -33,34 +33,36 @@ class MainView extends StatelessWidget {
                     iconSize: 48.0,
                     color: const Color(0xFF000000),
                     onPressed: () {
-                      Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const App1()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const App1()));
                     },
                   ),
-    
                   IconButton(
                     icon: const Icon(Icons.filter_2),
                     iconSize: 48.0,
-                    color: Color.fromARGB(255, 243, 5, 5),
-                     onPressed: () {
-                      Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const App2()));
+                    color: const Color.fromARGB(255, 243, 5, 5),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const App2()));
                     },
                   ),
-    
                   IconButton(
                     icon: const Icon(Icons.filter_3),
                     iconSize: 48.0,
                     color: const Color(0xFF000000),
-                     onPressed: () {
-                      Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const App3()));
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const App3()));
                     },
                   )
-                ]
-              ),
-    
-              Row(
+                ]),
+            Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -69,36 +71,39 @@ class MainView extends StatelessWidget {
                     icon: const Icon(Icons.filter_4),
                     iconSize: 48.0,
                     color: const Color(0xFF000000),
-                     onPressed: () {
-                      Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const App4()));
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const App4()));
                     },
                   ),
-    
                   IconButton(
                     icon: const Icon(Icons.filter_5),
                     iconSize: 48.0,
                     color: const Color(0xFF000000),
-                     onPressed: () {
-                      Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const App5()));
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const App5()));
                     },
                   ),
-    
                   IconButton(
                     icon: const Icon(Icons.filter_6),
                     iconSize: 48.0,
                     color: const Color(0xFF000000),
-                     onPressed: () {
-                      Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const App6()));
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const App6()));
                     },
                   )
-                ]
-              )
-            ]
-          ),
-      );
-    }
-    void iconButtonPressed(){}
+                ])
+          ]),
+    );
   }
+
+  void iconButtonPressed() {}
+}
