@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_harjoitus/views/app_1.dart';
 import 'package:flutter_harjoitus/views/app_2.dart';
@@ -29,14 +30,16 @@ class MainView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   IconButton(
-                    icon: const Icon(Icons.filter_1),
+                    icon: const Icon(Icons.camera_alt_outlined),
                     iconSize: 48.0,
                     color: const Color(0xFF000000),
-                    onPressed: () {
+                    onPressed: () async {
+                      WidgetsFlutterBinding.ensureInitialized();
+                      await availableCameras().then((value) =>
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const App1()));
+                              builder: (context) => TakePictureScreen(camera: value))));
                     },
                   ),
                   IconButton(
