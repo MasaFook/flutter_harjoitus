@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "370834859443",
+    "firebase_url": "https://flutterharjoitus-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "flutterharjoitus",
+    "storage_bucket": "flutterharjoitus.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:370834859443:android:e7ef5471f1a2c3cdc557c6",
+        "android_client_info": {
+          "package_name": "com.example.flutter_harjoitus"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDs3_OmK_HfqVAPwRbswfUA9SL8SkQ3gs0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

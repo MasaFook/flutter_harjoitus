@@ -6,7 +6,7 @@ import 'package:camera/camera.dart';
 // A screen that allows users to take a picture using a given camera.
 class TakePictureScreen extends StatefulWidget {
    final List<CameraDescription>? camera;
-   const TakePictureScreen({this.camera, Key? key}) : super(key: key);
+   const TakePictureScreen({this.camera, super.key});
   
 
   @override
