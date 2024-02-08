@@ -9,10 +9,6 @@ class Muistilaput extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Muistilaput',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)
-            .copyWith(secondary: Colors.pinkAccent),
-      ),
       home: MyHomePage(),
     );
   }
@@ -28,6 +24,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? _user;
+
+  // Määrittele pastellivärit
   final List<Color> pastelColors = [
     Color(0xFF9A5CA5),
     Color(0xFFF18D9E),
@@ -42,18 +40,21 @@ class _MyHomePageState extends State<MyHomePage> {
     _user = _auth.currentUser;
   }
 
-  Color getPastelColor(int index) {
-    // To ensure we always get a valid index, use modulo
-    return pastelColors[index % pastelColors.length];
+  void _addNote() {
+    String noteText = _noteController.text.trim();
+    if (noteText.isNotEmpty && _user != null) {
+      _firestore.collection('muistilaput').add({
+        'teksti': noteText,
+        'userId': _user!.uid,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      _noteController.clear();
+    }
   }
 
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: Duration(seconds: 2),
-      ),
-    );
+  void _deleteNote(String noteId) {
+    _firestore.collection('muistilaput').doc(noteId).delete();
   }
 
   @override
@@ -83,17 +84,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   decoration: InputDecoration(labelText: 'Lisää muistilappu'),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    _addNote();
-                    _showSnackBar('Muistilappu lisätty!');
-                  },
+                  onPressed: _addNote,
                   child: Text('Lisää'),
                 ),
                 StreamBuilder(
                   stream: _firestore
                       .collection('muistilaput')
-                      //  .where('userId', isEqualTo: _user!.uid)
-                      .orderBy('timestamp', descending: true)
+                      .where('userId', isEqualTo: _user!.uid)
                       .snapshots(),
                   builder: (context,
                       AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
@@ -115,18 +112,15 @@ class _MyHomePageState extends State<MyHomePage> {
                         itemCount: notes.length,
                         itemBuilder: (context, index) {
                           var note = notes[index];
-                          Color cardColor = getPastelColor(index);
-
-                          return Card(
-                            color: cardColor,
+                          final pastelColor =
+                              pastelColors[index % pastelColors.length];
+                          return Container(
+                            color: pastelColor,
                             child: ListTile(
                               title: Text(note['teksti']),
                               trailing: IconButton(
                                 icon: Icon(Icons.delete),
-                                onPressed: () {
-                                  _deleteNote(note.id);
-                                  _showSnackBar('Muistilappu poistettu!');
-                                },
+                                onPressed: () => _deleteNote(note.id),
                               ),
                             ),
                           );
@@ -141,22 +135,5 @@ class _MyHomePageState extends State<MyHomePage> {
               child: CircularProgressIndicator(),
             ),
     );
-  }
-
-  void _addNote() {
-    String noteText = _noteController.text.trim();
-    if (noteText.isNotEmpty && _user != null) {
-      _firestore.collection('muistilaput').add({
-        'teksti': noteText,
-        'userId': _user!.uid,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-
-      _noteController.clear();
-    }
-  }
-
-  void _deleteNote(String noteId) {
-    _firestore.collection('muistilaput').doc(noteId).delete();
   }
 }
