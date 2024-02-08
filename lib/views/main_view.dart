@@ -35,22 +35,22 @@ class MainView extends StatelessWidget {
                     color: const Color(0xFF000000),
                     onPressed: () async {
                       WidgetsFlutterBinding.ensureInitialized();
-                      await availableCameras().then((value) =>
-                      Navigator.push(
+                      await availableCameras().then((value) => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => TakePictureScreen(camera: value))));
+                              builder: (context) =>
+                                  TakePictureScreen(camera: value))));
                     },
                   ),
                   IconButton(
-                    icon: const Icon(Icons.filter_2),
+                    icon: const Icon(Icons.note_alt_outlined),
                     iconSize: 48.0,
-                    color: const Color.fromARGB(255, 243, 5, 5),
+                    color: const Color(0xFF000000),
                     onPressed: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const App2()));
+                              builder: (context) => Muistilaput()));
                     },
                   ),
                   IconButton(
