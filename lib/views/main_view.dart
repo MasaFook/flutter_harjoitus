@@ -50,7 +50,7 @@ class MainView extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Muistilaput()));
+                              builder: (context) => const Muistilaput()));
                     },
                   ),
                   IconButton(
