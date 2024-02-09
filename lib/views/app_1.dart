@@ -118,7 +118,7 @@ class DisplayPictureScreen extends StatelessWidget {
               status = await Permission.storage.request();
               if (!status.isGranted) {
                 // Permission denied by the user
-                scaffoldMessenger.showSnackBar(SnackBar(content: Text('Permission denied')));
+                scaffoldMessenger.showSnackBar(const SnackBar(content: Text('Permission denied')));
                 return;
               }
             }
@@ -127,7 +127,7 @@ class DisplayPictureScreen extends StatelessWidget {
               // Save the image to the device's gallery.
               await ImageGallerySaver.saveFile(imagePath);
               // Show a success message
-              scaffoldMessenger.showSnackBar(SnackBar(content: Text('Image saved successfully')));
+              scaffoldMessenger.showSnackBar(const SnackBar(content: Text('Image saved successfully')));
             } catch (e) {
               // Display an error message if the saving process fails.
               scaffoldMessenger.showSnackBar(SnackBar(content: Text('Failed to save image: $e')));

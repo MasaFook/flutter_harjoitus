@@ -1,13 +1,14 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'main_view.dart';
 
 class Muistilaput extends StatelessWidget {
+  const Muistilaput({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Muistilaput',
       home: MyHomePage(),
     );
@@ -15,6 +16,8 @@ class Muistilaput extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -27,11 +30,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Määrittele pastellivärit
   final List<Color> pastelColors = [
-    Color(0xFF9A5CA5),
-    Color(0xFFF18D9E),
-    Color(0xFFE5AC6D),
-    Color(0xFFA7D7C5),
-    Color(0xFFB2CCFF),
+    const Color(0xFF9A5CA5),
+    const Color(0xFFF18D9E),
+    const Color(0xFFE5AC6D),
+    const Color(0xFFA7D7C5),
+    const Color(0xFFB2CCFF),
   ];
 
   @override
@@ -64,15 +67,15 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Row(
           children: [
             IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: const Icon(Icons.arrow_back),
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => MainView()),
+                  MaterialPageRoute(builder: (context) => const MainView()),
                 );
               },
             ),
-            Text('Muistilaput'),
+            const Text('Muistilaput'),
           ],
         ),
       ),
@@ -81,11 +84,11 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 TextField(
                   controller: _noteController,
-                  decoration: InputDecoration(labelText: 'Lisää muistilappu'),
+                  decoration: const InputDecoration(labelText: 'Lisää muistilappu'),
                 ),
                 ElevatedButton(
                   onPressed: _addNote,
-                  child: Text('Lisää'),
+                  child: const Text('Lisää'),
                 ),
                 StreamBuilder(
                   stream: _firestore
@@ -96,13 +99,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
                           snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
+                      return const CircularProgressIndicator();
                     }
 
                     if (!snapshot.hasData ||
                         snapshot.data == null ||
                         snapshot.data!.docs.isEmpty) {
-                      return Text('Ei muistiinpanoja');
+                      return const Text('Ei muistiinpanoja');
                     }
 
                     var notes = snapshot.data!.docs;
@@ -119,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             child: ListTile(
                               title: Text(note['teksti']),
                               trailing: IconButton(
-                                icon: Icon(Icons.delete),
+                                icon: const Icon(Icons.delete),
                                 onPressed: () => _deleteNote(note.id),
                               ),
                             ),
@@ -131,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             )
-          : Center(
+          : const Center(
               child: CircularProgressIndicator(),
             ),
     );
