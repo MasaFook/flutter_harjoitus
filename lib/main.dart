@@ -8,7 +8,6 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  //await dbHelper.init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -17,6 +16,24 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
+  Future<void> _signIn() async {
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: 'testi1@gmail.com',
+        password: 'testi1',
+      );
+
+      User? user = userCredential.user;
+      if (user != null) {
+        print('Kirjautunut käyttäjä UID: ${user.uid}');
+        print('Käyttäjän nimi: ${user.displayName}');
+      }
+    } catch (e) {
+      print('Kirjautuminen epäonnistui: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +54,8 @@ class MyApp extends StatelessWidget {
           return SignInScreen(
             providers: providers,
             actions: [
-              AuthStateChangeAction<SignedIn>((context, state) {
+              AuthStateChangeAction<SignedIn>((context, state) async {
+                await _signIn(); // Kutsu _signIn-funktiota kirjautumisen yhteydessä
                 Navigator.pushReplacementNamed(context, '/main-view');
               }),
             ],
