@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 
 // A screen that allows users to take a picture using a given camera.
@@ -112,14 +113,18 @@ class DisplayPictureScreen extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             // Check if the storage permission is granted
+            final deviceInfo = await DeviceInfoPlugin().androidInfo;
             var status = await Permission.storage.status;
-            if (!status.isGranted) {
-              // If not granted, request the storage permission
-              status = await Permission.storage.request();
+            //check sdk
+            if(deviceInfo.version.sdkInt < 32){
               if (!status.isGranted) {
-                // Permission denied by the user
-                scaffoldMessenger.showSnackBar(SnackBar(content: Text('Permission denied')));
-                return;
+                // If not granted, request the storage permission
+                status = await Permission.storage.request();
+                if (!status.isGranted) {
+                  // Permission denied by the user
+                  scaffoldMessenger.showSnackBar(SnackBar(content: Text('Permission denied')));
+                  return;
+                }
               }
             }
             // Permission is granted, proceed with saving the image
@@ -128,7 +133,8 @@ class DisplayPictureScreen extends StatelessWidget {
               await ImageGallerySaver.saveFile(imagePath);
               // Show a success message
               scaffoldMessenger.showSnackBar(SnackBar(content: Text('Image saved successfully')));
-            } catch (e) {
+            }
+             catch (e) {
               // Display an error message if the saving process fails.
               scaffoldMessenger.showSnackBar(SnackBar(content: Text('Failed to save image: $e')));
             }
