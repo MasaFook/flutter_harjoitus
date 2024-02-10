@@ -28,6 +28,69 @@ class _MyHomePageState extends State<MyHomePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? _user;
 
+  String _getCurrentUserEmail() {
+    if (_user != null) {
+      return _user!.email ?? 'N/A';
+    } else {
+      return 'Not logged in';
+    }
+  }
+
+  // Lisää apufunktio sähköpostin käyttäjänimen erottamiseen
+  String getEmailUsername(String email) {
+    // Tässä voit toteuttaa oman logiikkasi sähköpostiosoitteen pilkkomiseksi haluttuun muotoon
+    // Esimerkiksi voit ottaa kaiken ennen @-merkkiä
+    return email.split('@')[0];
+  }
+
+  String generateUserName(String email) {
+    return email.split('@')[0];
+  }
+
+  String generateUsernameFromEmail(String email) {
+    // Tässä otetaan kaikki ennen '@'-merkkiä oleva osa sähköpostiosoitteesta
+    return email.split('@')[0];
+  }
+
+  void _signIn(String email, String password) async {
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      User? user = userCredential.user;
+      if (user != null) {
+        print('Kirjautunut käyttäjä UID: ${user.uid}');
+        print('Käyttäjän nimi: ${user.displayName}');
+
+        // Määritä käyttäjänimi sähköpostiosoitteen perusteella
+        String userName = generateUserName(email);
+
+        // Päivitä käyttäjänimi tähän
+        await user.updateDisplayName(userName);
+
+        // Odota hetki ennen kuin jatketaan
+        await Future.delayed(Duration(seconds: 1));
+
+        // Tässä vaiheessa käyttäjänimi on päivitetty Firebase Authenticationiin,
+        // ja sen pitäisi olla saatavilla myös Firestoreen tallentamiseen.
+
+        // Voit kutsua tässä _addNote-funktiota tai muita funktioita, joissa käyttäjänimeä käytetään.
+      } else {
+        print('Käyttäjäobjekti on null');
+      }
+    } catch (e) {
+      print('Kirjautuminen epäonnistui: $e');
+    }
+  }
+
+  String generateUniqueUserName() {
+    String baseName = _user!.email?.split('@')[0] ?? 'user';
+    return '$baseName${DateTime.now().millisecondsSinceEpoch}';
+  }
+
   // Määrittele pastellivärit
   final List<Color> pastelColors = [
     const Color(0xFF9A5CA5),
@@ -37,38 +100,40 @@ class _MyHomePageState extends State<MyHomePage> {
     const Color(0xFFB2CCFF),
   ];
 
-  String _getCurrentUserEmail() {
-    if (_user != null) {
-      return _user!.email ?? 'N/A';
-    } else {
-      return 'Not logged in';
-    }
-  }
-
   @override
   void initState() {
     super.initState();
     _user = _auth.currentUser;
   }
 
-  void _addNote() {
+  void _addNote() async {
     String noteText = _noteController.text.trim();
     if (noteText.isNotEmpty && _user != null) {
-      print('Kirjautuneen käyttäjän UID: ${_user!.uid}');
-      _firestore.collection('muistilaput').add({
-        'teksti': noteText,
-        'userId': _user!.uid,
-        'userName': _user!.displayName,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
+      try {
+        // Päivitä käyttäjänimi sähköpostiosoitteen perusteella
+        String userName = generateUsernameFromEmail(_user!.email!);
 
-      _noteController.clear();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Muistilapun lisäys onnistui'),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+        // Päivitä käyttäjänimi Firebase Authenticationiin
+        await _user!.updateDisplayName(userName);
+
+        // Tallenna muistiinpano Firestoreen
+        _firestore.collection('muistilaput').add({
+          'teksti': noteText,
+          'userId': _user!.uid,
+          'userName': userName, // Käytä tässä _user!.displayName
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+
+        _noteController.clear();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Muistilapun lisäys onnistui'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      } catch (e) {
+        print('Virhe muistiinpanon lisäyksessä: $e');
+      }
     }
   }
 
@@ -146,8 +211,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             color: pastelColor,
                             child: ListTile(
                               title: Text(note['teksti']),
-                              subtitle:
-                                  Text('Tekijä: ${_getCurrentUserEmail()}'),
+                              subtitle: Text(
+                                  'Tekijä: ${note['userName'] ?? 'N/A'}'), // Käytä note['userName']
                               trailing: IconButton(
                                 icon: const Icon(Icons.delete),
                                 onPressed: () => _deleteNote(note.id),
