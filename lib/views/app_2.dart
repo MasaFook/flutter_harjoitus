@@ -137,14 +137,23 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _deleteNote(String noteId) {
-    _firestore.collection('muistilaput').doc(noteId).delete();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Muistilapun poistaminen onnistui'),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+  void _deleteNote(String noteId, String userId) {
+    if (_user != null && userId == _user!.uid) {
+      _firestore.collection('muistilaput').doc(noteId).delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Muistilapun poistaminen onnistui'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Ei oikeutta poistaa tätä muistiinpanoa'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   @override
@@ -215,7 +224,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                   'Tekijä: ${note['userName'] ?? 'N/A'}'), // Käytä note['userName']
                               trailing: IconButton(
                                 icon: const Icon(Icons.delete),
-                                onPressed: () => _deleteNote(note.id),
+                                onPressed: () =>
+                                    _deleteNote(note.id, note['userId']),
                               ),
                             ),
                           );
