@@ -122,7 +122,7 @@ class DisplayPictureScreen extends StatelessWidget {
                 status = await Permission.storage.request();
                 if (!status.isGranted) {
                   // Permission denied by the user
-                  scaffoldMessenger.showSnackBar(SnackBar(content: Text('Permission denied')));
+                  scaffoldMessenger.showSnackBar(const SnackBar(content: Text('Permission denied')));
                   return;
                 }
               }

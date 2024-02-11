@@ -61,7 +61,7 @@ class MainView extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Shaker()));
+                              builder: (context) => const Shaker()));
                     },
                   )
                 ]),
