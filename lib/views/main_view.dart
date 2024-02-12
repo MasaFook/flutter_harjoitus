@@ -58,10 +58,6 @@ class MainView extends StatelessWidget {
                     iconSize: 48.0,
                     color: const Color(0xFF000000),
                     onPressed: () {
-<<<<<<< HEAD
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Shaker()));
-=======
                       Navigator.push(
                           context,
                           MaterialPageRoute(
