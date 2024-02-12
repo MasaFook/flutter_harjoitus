@@ -17,7 +17,7 @@ class MainView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('App Name'),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Colors.white,
       ),
       body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -61,7 +61,7 @@ class MainView extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Shaker()));
+                              builder: (context) => const Shaker()));
                     },
                   ),
                 ]),
