@@ -54,16 +54,14 @@ class MainView extends StatelessWidget {
                     },
                   ),
                   IconButton(
-                    icon: const Icon(Icons.filter_3),
+                    icon: const Icon(Icons.autorenew),
                     iconSize: 48.0,
                     color: const Color(0xFF000000),
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Shaker()));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Shaker()));
                     },
-                  )
+                  ),
                 ]),
             Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
