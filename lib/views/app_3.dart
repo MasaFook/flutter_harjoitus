@@ -15,6 +15,8 @@ class ShakerPage extends StatelessWidget {
 }
 
 class Shaker extends StatefulWidget {
+  const Shaker({super.key});
+
   @override
   ShakerState createState() => ShakerState();
 }

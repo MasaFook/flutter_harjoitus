@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -43,21 +45,60 @@ class _MyHomePageState extends State<MyHomePage> {
     _user = _auth.currentUser;
   }
 
-  void _addNote() {
+  String generateUsernameFromEmail(String email) {
+    // Tässä otetaan kaikki ennen '@'-merkkiä oleva osa sähköpostiosoitteesta
+    return email.split('@')[0];
+  }
+
+  void _addNote() async {
     String noteText = _noteController.text.trim();
     if (noteText.isNotEmpty && _user != null) {
-      _firestore.collection('muistilaput').add({
-        'teksti': noteText,
-        'userId': _user!.uid,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
+      try {
+        // Tallenna context-muuttuja ennen asynkronista operaatiota
+        BuildContext currentContext = context;
 
-      _noteController.clear();
+        String userName = generateUsernameFromEmail(_user!.email!);
+        await _user!.updateDisplayName(userName);
+
+        await _firestore.collection('muistilaput').add({
+          'teksti': noteText,
+          'userId': _user!.uid,
+          'userName': userName,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+
+        _noteController.clear();
+
+        // Käytä tallennettua context-muuttujaa
+        ScaffoldMessenger.of(currentContext).showSnackBar(
+          const SnackBar(
+            content: Text('Muistilapun lisäys onnistui'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } catch (e) {
+        print('Virhe muistiinpanon lisäyksessä: $e');
+      }
     }
   }
 
-  void _deleteNote(String noteId) {
-    _firestore.collection('muistilaput').doc(noteId).delete();
+  void _deleteNote(String noteId, String userId) {
+    if (_user != null && userId == _user!.uid) {
+      _firestore.collection('muistilaput').doc(noteId).delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Muistilapun poistaminen onnistui'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Ei oikeutta poistaa tätä muistiinpanoa'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   @override
@@ -84,17 +125,15 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 TextField(
                   controller: _noteController,
-                  decoration: const InputDecoration(labelText: 'Lisää muistilappu'),
+                  decoration:
+                      const InputDecoration(labelText: 'Lisää muistilappu'),
                 ),
                 ElevatedButton(
                   onPressed: _addNote,
                   child: const Text('Lisää'),
                 ),
                 StreamBuilder(
-                  stream: _firestore
-                      .collection('muistilaput')
-                      .where('userId', isEqualTo: _user!.uid)
-                      .snapshots(),
+                  stream: _firestore.collection('muistilaput').snapshots(),
                   builder: (context,
                       AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
                           snapshot) {
@@ -110,20 +149,40 @@ class _MyHomePageState extends State<MyHomePage> {
 
                     var notes = snapshot.data!.docs;
 
+                    for (var note in notes) {
+                      print('Firestore Stream Note: ${note.data()}');
+                    }
+
                     return Expanded(
                       child: ListView.builder(
                         itemCount: notes.length,
                         itemBuilder: (context, index) {
                           var note = notes[index];
+                          print('Tallennettu userId: ${note['userId']}');
                           final pastelColor =
                               pastelColors[index % pastelColors.length];
-                          return Container(
+
+                          return Card(
                             color: pastelColor,
                             child: ListTile(
-                              title: Text(note['teksti']),
+                              title: Text(
+                                note['teksti'],
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                              subtitle: Text(
+                                'Tekijä: ${note['userName'] ?? 'N/A'}',
+                                style: const TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
                               trailing: IconButton(
                                 icon: const Icon(Icons.delete),
-                                onPressed: () => _deleteNote(note.id),
+                                onPressed: () {
+                                  _deleteNote(note.id, note['userId']);
+                                },
                               ),
                             ),
                           );
