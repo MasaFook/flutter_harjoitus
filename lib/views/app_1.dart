@@ -132,7 +132,7 @@ class DisplayPictureScreen extends StatelessWidget {
               // Save the image to the device's gallery.
               await ImageGallerySaver.saveFile(imagePath);
               // Show a success message
-              scaffoldMessenger.showSnackBar(SnackBar(content: Text('Image saved successfully')));
+              scaffoldMessenger.showSnackBar(const SnackBar(content: Text('Image saved successfully')));
             }
              catch (e) {
               // Display an error message if the saving process fails.
