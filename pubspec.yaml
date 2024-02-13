@@ -48,6 +48,9 @@ dependencies:
   device_info_plus: ^9.1.2
   shake: ^2.2.0
 
+depency_overrides:
+  sensors_plus: ^4.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

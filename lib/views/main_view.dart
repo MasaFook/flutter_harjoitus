@@ -7,6 +7,7 @@ import 'package:flutter_harjoitus/views/app_4.dart';
 import 'package:flutter_harjoitus/views/app_5.dart';
 import 'package:flutter_harjoitus/views/app_6.dart';
 
+
 class MainView extends StatelessWidget {
   const MainView({
     super.key,
@@ -17,8 +18,14 @@ class MainView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('App Name'),
-        backgroundColor: Colors.white,
-      ),
+        backgroundColor: Theme.of(context).primaryColor,
+        actions:[
+        IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/profile');
+            },
+            icon: const Icon(Icons.person)),
+      ]),
       body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           mainAxisSize: MainAxisSize.max,
@@ -50,7 +57,7 @@ class MainView extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const Muistilaput()));
+                              builder: (context) => const MyHomePage()));
                     },
                   ),
                   IconButton(
