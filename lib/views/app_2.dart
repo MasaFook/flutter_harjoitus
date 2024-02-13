@@ -1,5 +1,3 @@
-// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,7 +18,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? _user;
 
-  // Määrittele pastellivärit
   final List<Color> pastelColors = [
     const Color(0xFF9A5CA5),
     const Color(0xFFF18D9E),
@@ -36,7 +33,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String generateUsernameFromEmail(String email) {
-    // Tässä otetaan kaikki ennen '@'-merkkiä oleva osa sähköpostiosoitteesta
     return email.split('@')[0];
   }
 
@@ -44,9 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
     String noteText = _noteController.text.trim();
     if (noteText.isNotEmpty && _user != null) {
       try {
-        // Tallenna context-muuttuja ennen asynkronista operaatiota
         BuildContext currentContext = context;
-
         String userName = generateUsernameFromEmail(_user!.email!);
         await _user!.updateDisplayName(userName);
 
@@ -59,7 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
         _noteController.clear();
 
-        // Käytä tallennettua context-muuttujaa
         ScaffoldMessenger.of(currentContext).showSnackBar(
           const SnackBar(
             content: Text('Muistilapun lisäys onnistui'),
@@ -67,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         );
       } catch (e) {
-        print('Virhe muistiinpanon lisäyksessä: $e');
+        print('Virhe muistilapun lisäyksessä: $e');
       }
     }
   }
@@ -88,6 +81,69 @@ class _MyHomePageState extends State<MyHomePage> {
           duration: Duration(seconds: 2),
         ),
       );
+    }
+  }
+
+  void _showEditDialog(String noteId, String currentText) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        final TextEditingController editController =
+            TextEditingController(text: currentText);
+        return AlertDialog(
+          title: const Text('Muokkaa muistilappua'),
+          content: TextField(
+            controller: editController,
+            decoration:
+                const InputDecoration(labelText: 'Muokkaa muistilappua'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Peruuta'),
+            ),
+            TextButton(
+              onPressed: () {
+                _editNote(noteId, editController.text);
+                Navigator.pop(context);
+              },
+              child: const Text('Tallenna muutokset'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _editNote(String noteId, String newText) {
+    if (_user != null) {
+      _firestore.collection('muistilaput').doc(noteId).get().then((document) {
+        if (document.exists) {
+          if (_user!.uid == document.data()!['userId']) {
+            _firestore.collection('muistilaput').doc(noteId).update({
+              'teksti': newText,
+              'timestamp': FieldValue.serverTimestamp(),
+            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Muistilapun muokkaus onnistui'),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Ei oikeutta muokata tätä muistilappua'),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          }
+        }
+      }).catchError((error) {
+        print('Virhe muistilapun haussa: $error');
+      });
     }
   }
 
@@ -120,23 +176,21 @@ class _MyHomePageState extends State<MyHomePage> {
                     if (!snapshot.hasData ||
                         snapshot.data == null ||
                         snapshot.data!.docs.isEmpty) {
-                      return const Text('Ei muistiinpanoja');
+                      return const Text('Ei muistilappuja');
                     }
 
                     var notes = snapshot.data!.docs;
-
-                    for (var note in notes) {
-                      print('Firestore Stream Note: ${note.data()}');
-                    }
 
                     return Expanded(
                       child: ListView.builder(
                         itemCount: notes.length,
                         itemBuilder: (context, index) {
                           var note = notes[index];
-                          print('Tallennettu userId: ${note['userId']}');
                           final pastelColor =
                               pastelColors[index % pastelColors.length];
+
+                          // Tarkista, onko käyttäjä alkuperäisen muistiinpanon tekijä
+                          bool isNoteCreator = _user!.uid == note['userId'];
 
                           return Card(
                             color: pastelColor,
@@ -154,11 +208,27 @@ class _MyHomePageState extends State<MyHomePage> {
                                   fontStyle: FontStyle.italic,
                                 ),
                               ),
-                              trailing: IconButton(
-                                icon: const Icon(Icons.delete),
-                                onPressed: () {
-                                  _deleteNote(note.id, note['userId']);
-                                },
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  // Muokkauskuvake
+                                  if (isNoteCreator)
+                                    IconButton(
+                                      icon: const Icon(Icons.edit),
+                                      onPressed: () {
+                                        _showEditDialog(
+                                            note.id, note['teksti']);
+                                      },
+                                    ),
+                                  // Poistokuvake
+                                  if (isNoteCreator)
+                                    IconButton(
+                                      icon: const Icon(Icons.delete),
+                                      onPressed: () {
+                                        _deleteNote(note.id, note['userId']);
+                                      },
+                                    ),
+                                ],
                               ),
                             ),
                           );
