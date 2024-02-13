@@ -2,18 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shake/shake.dart';
 import 'dart:math';
 
-class ShakerPage extends StatelessWidget {
-  const ShakerPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Shaker',
-      home: ShakerPage(),
-    );
-  }
-}
-
 class Shaker extends StatefulWidget {
   const Shaker({super.key});
 
