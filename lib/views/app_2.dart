@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'main_view.dart';
-
-
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -150,9 +147,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Muistilaput')),
-        body: _user != null
+      appBar: AppBar(title: const Text('Muistilaput')),
+      body: _user != null
           ? Column(
               children: [
                 TextField(
