@@ -5,17 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'main_view.dart';
 
-class Muistilaput extends StatelessWidget {
-  const Muistilaput({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Muistilaput',
-      home: MyHomePage(),
-    );
-  }
-}
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -105,22 +95,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MainView()),
-                );
-              },
-            ),
-            const Text('Muistilaput'),
-          ],
-        ),
-      ),
-      body: _user != null
+        title: const Text('Muistilaput')),
+        body: _user != null
           ? Column(
               children: [
                 TextField(

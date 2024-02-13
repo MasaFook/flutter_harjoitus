@@ -46,7 +46,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Take a picture')),
+      appBar: AppBar(title: const Text('Camera')),
       // You must wait until the controller is initialized before displaying the
       // camera preview. Use a FutureBuilder to display a loading spinner until the
       // controller has finished initializing.
@@ -62,38 +62,46 @@ class TakePictureScreenState extends State<TakePictureScreen> {
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        // Provide an onPressed callback.
-        onPressed: () async {
-          // Take the Picture in a try / catch block. If anything goes wrong,
-          // catch the error.
-          try {
-            // Ensure that the camera is initialized.
-            await _initializeControllerFuture;
+      floatingActionButton: Row(
+        mainAxisAlignment:MainAxisAlignment.spaceEvenly,
+        children: [
+          const SizedBox(width: 4),
+          const Text('Take a picture'),
+          FloatingActionButton(
+            backgroundColor: Colors.purple,
+            // Provide an onPressed callback.
+            onPressed: () async {
+              // Take the Picture in a try / catch block. If anything goes wrong,
+              // catch the error.
+              try {
+                // Ensure that the camera is initialized.
+                await _initializeControllerFuture;
 
-            // Attempt to take a picture and get the file `image`
-            // where it was saved.
-            final image = await _controller.takePicture();
+                // Attempt to take a picture and get the file `image`
+                // where it was saved.
+                final image = await _controller.takePicture();
 
-            if (!mounted) return;
+                if (!mounted) return;
 
-            // If the picture was taken, display it on a new screen.
-            await Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => DisplayPictureScreen(
-                  // Pass the automatically generated path to
-                  // the DisplayPictureScreen widget.
-                  imagePath: image.path,
-                ),
-              ),
-            );
-          } catch (e) {
-            // If an error occurs, log the error to the console.
-            print(e);
-          }
-        },
-        child: const Icon(Icons.camera_alt),
-      ),
+                // If the picture was taken, display it on a new screen.
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => DisplayPictureScreen(
+                      // Pass the automatically generated path to
+                      // the DisplayPictureScreen widget.
+                      imagePath: image.path,
+                    ),
+                  ),
+                );
+              } catch (e) {
+                // If an error occurs, log the error to the console.
+                print(e);
+              }
+            },
+            child: const Icon(Icons.camera_alt),
+          )
+        ],
+      )
     );
   }
 }
@@ -108,39 +116,47 @@ class DisplayPictureScreen extends StatelessWidget {
     Widget build(BuildContext context) {
       ScaffoldMessengerState scaffoldMessenger = ScaffoldMessenger.of(context);
       return Scaffold(
-        appBar: AppBar(title: const Text('Display the Picture')),
+        appBar: AppBar(title: const Text('Displaying Picture')),
         body: Image.file(File(imagePath)),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            // Check if the storage permission is granted
-            final deviceInfo = await DeviceInfoPlugin().androidInfo;
-            var status = await Permission.storage.status;
-            //check sdk
-            if(deviceInfo.version.sdkInt < 32){
-              if (!status.isGranted) {
-                // If not granted, request the storage permission
-                status = await Permission.storage.request();
-                if (!status.isGranted) {
-                  // Permission denied by the user
-                  scaffoldMessenger.showSnackBar(const SnackBar(content: Text('Permission denied')));
-                  return;
+        floatingActionButton: Row(
+          mainAxisAlignment:MainAxisAlignment.spaceEvenly,
+          children: [
+            const SizedBox(width: 4),
+            const Text('Save'),
+            FloatingActionButton(
+              backgroundColor: Colors.purple,
+              onPressed: () async {
+                // Check if the storage permission is granted
+                final deviceInfo = await DeviceInfoPlugin().androidInfo;
+                var status = await Permission.storage.status;
+                //check sdk
+                if(deviceInfo.version.sdkInt < 32){
+                  if (!status.isGranted) {
+                  // If not granted, request the storage permission
+                    status = await Permission.storage.request();
+                  if (!status.isGranted) {
+                    // Permission denied by the user
+                    scaffoldMessenger.showSnackBar(const SnackBar(behavior: SnackBarBehavior.floating, content: Text('Permission denied')));
+                    return;
+                  }
                 }
               }
-            }
-            // Permission is granted, proceed with saving the image
-            try {
-              // Save the image to the device's gallery.
-              await ImageGallerySaver.saveFile(imagePath);
-              // Show a success message
-              scaffoldMessenger.showSnackBar(SnackBar(content: Text('Image saved successfully')));
-            }
-             catch (e) {
-              // Display an error message if the saving process fails.
-              scaffoldMessenger.showSnackBar(SnackBar(content: Text('Failed to save image: $e')));
-            }
-          },
-        child: const Icon(Icons.save_alt),
-      ),
+              // Permission is granted, proceed with saving the image
+              try {
+                // Save the image to the device's gallery.
+                await ImageGallerySaver.saveFile(imagePath);
+                // Show a success message
+                scaffoldMessenger.showSnackBar(const SnackBar(behavior: SnackBarBehavior.floating, content: Text('Image saved successfully')));
+              }
+              catch (e) {
+                // Display an error message if the saving process fails.
+                scaffoldMessenger.showSnackBar(SnackBar(behavior: SnackBarBehavior.floating, content: Text('Failed to save image: $e')));
+              }
+            },
+          child: const Icon(Icons.save_alt),
+          ),
+        ],
+      )
     );
   }
 }
