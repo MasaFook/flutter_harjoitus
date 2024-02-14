@@ -137,7 +137,7 @@ class MainView extends StatelessWidget {
               onPressed: () {
                 showModalBottomSheet(
                   context: context,
-                  backgroundColor: Color.fromARGB(255, 185, 191, 207),
+                  backgroundColor: const Color.fromARGB(255, 185, 191, 207),
                   builder: (context) {
                     return const SizedBox(
                       height: 130,

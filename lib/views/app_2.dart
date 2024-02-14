@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
 import 'package:share/share.dart';
-import 'dart:ui' as ui;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -129,6 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
             decoration:
                 const InputDecoration(labelText: 'Muokkaa muistilappua'),
           ),
+          backgroundColor: Colors.white, // Aseta taustaväri tässä
           actions: [
             TextButton(
               onPressed: () {
@@ -182,7 +181,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Muistilaput')),
+      appBar: AppBar(
+        title: const Text('Muistilaput'),
+      ),
       body: _user != null
           ? Column(
               children: [
@@ -196,7 +197,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: const Text('Lisää'),
                 ),
                 StreamBuilder(
-                  stream: _firestore.collection('muistilaput').snapshots(),
+                  stream: _firestore
+                      .collection('muistilaput')
+                      .where(
+                        'userId',
+                        isEqualTo: _user!.uid,
+                      ) // Näytetään vain käyttäjän omat muistilaput
+                      .snapshots(),
                   builder: (context,
                       AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
                           snapshot) {
@@ -261,11 +268,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                     ),
                                   if (isNoteCreator)
                                     IconButton(
-                                        icon: const Icon(Icons.share),
-                                        onPressed: () {
-                                          _shareNote(
-                                              note.id, note.data()!['teksti']);
-                                        })
+                                      icon: const Icon(Icons.share),
+                                      onPressed: () {
+                                        _shareNote(
+                                            note.id, note.data()['teksti']);
+                                      },
+                                    ),
                                 ],
                               ),
                             ),
