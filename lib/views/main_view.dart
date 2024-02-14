@@ -12,7 +12,6 @@ class MainView extends StatelessWidget {
   const MainView({
     super.key,
   });
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,10 +109,45 @@ class MainView extends StatelessWidget {
                               builder: (context) => const App6()));
                     },
                   )
-                ])
-          ]),
+                ]
+              ),
+          ]
+        ),
+        bottomNavigationBar: BottomAppBar(
+          color: const Color.fromARGB(255, 255, 255, 255),
+          elevation: 0,
+          height: 70,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              IconButton(
+              icon: const Icon(Icons.arrow_drop_up_outlined),
+              iconSize: 48.0,
+              color: const Color(0xFF000000),
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  backgroundColor: Color.fromARGB(255, 198, 206, 231),
+                  builder: (context) {
+                    return const SizedBox(
+                      height: 130,
+                      width: double.infinity,
+                      child: Column(
+                        children: [
+                          Text('Tekijät:'),
+                          Text('Sami'),
+                          Text('Henri'),
+                          Text('Matti'),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+            )
+          ]
+        ),
+      )
     );
   }
-
-  void iconButtonPressed() {}
 }
