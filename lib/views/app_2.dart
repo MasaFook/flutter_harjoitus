@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
+import 'package:share/share.dart';
+import 'dart:ui' as ui;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -75,6 +78,38 @@ class _MyHomePageState extends State<MyHomePage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Ei oikeutta poistaa tätä muistiinpanoa'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
+  Future<void> _shareNote(String noteId, String noteText) async {
+    try {
+      if (_user != null) {
+        // Hae muistilapun tiedot
+        DocumentSnapshot<Map<String, dynamic>> noteSnapshot =
+            await _firestore.collection('muistilaput').doc(noteId).get();
+
+        // Tarkista, onko käyttäjä muistilapun tekijä
+        if (noteSnapshot.exists &&
+            noteSnapshot.data()!['userId'] == _user!.uid) {
+          Share.share(noteText);
+        } else {
+          print('Käyttäjällä ei ole oikeuksia jakaa tätä muistilappua');
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Ei oikeuksia jakaa tätä muistilappua'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print('Virhe muistilapun jakamisessa: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Muistilapun jakaminen epäonnistui'),
           duration: Duration(seconds: 2),
         ),
       );
@@ -224,6 +259,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                         _deleteNote(note.id, note['userId']);
                                       },
                                     ),
+                                  if (isNoteCreator)
+                                    IconButton(
+                                        icon: const Icon(Icons.share),
+                                        onPressed: () {
+                                          _shareNote(
+                                              note.id, note.data()!['teksti']);
+                                        })
                                 ],
                               ),
                             ),
