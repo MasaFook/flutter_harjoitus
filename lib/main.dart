@@ -22,12 +22,13 @@ class MyApp extends StatelessWidget {
     final providers = [EmailAuthProvider()];
 
     const String appTitle = 'Flutter layout demo';
+
     return MaterialApp(
       title: appTitle,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blueGrey)
             .copyWith(secondary: Colors.pinkAccent),
-        scaffoldBackgroundColor: Colors.white,
+        scaffoldBackgroundColor: Colors.blueGrey,
       ),
       initialRoute:
           FirebaseAuth.instance.currentUser == null ? '/sign-in' : '/main-view',
