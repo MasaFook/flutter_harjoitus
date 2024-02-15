@@ -39,7 +39,10 @@ class ShakerState extends State<Shaker> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Shake Detector')),
+      appBar: AppBar(
+        title: const Text('Shake Detector'),
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
       body: Container(
         padding: const EdgeInsets.all(32),
         color: _backgroundColor,

@@ -223,6 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Muistilaput'),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: _user != null
           ? Column(
