@@ -14,6 +14,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _noteController = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FocusNode _noteFocusNode = FocusNode();
   User? _user;
 
   final List<Color> pastelColors = [
@@ -28,6 +29,13 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _user = _auth.currentUser;
+  }
+
+  @override
+  void dispose() {
+    // Huolehdi FocusNoden hävittämisestä
+    _noteFocusNode.dispose();
+    super.dispose();
   }
 
   String generateUsernameFromEmail(String email) {
@@ -189,12 +197,25 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 TextField(
                   controller: _noteController,
-                  decoration:
-                      const InputDecoration(labelText: 'Lisää muistilappu'),
+                  focusNode: _noteFocusNode,
+                  decoration: InputDecoration(
+                    labelText: 'Kirjoita haluamasi teksti tähän',
+                    suffixIcon: AnimatedBuilder(
+                      animation: _noteFocusNode,
+                      builder: (context, child) {
+                        return Icon(
+                          Icons.edit,
+                          color: _noteFocusNode.hasFocus
+                              ? Colors.blue
+                              : Colors.grey,
+                        );
+                      },
+                    ),
+                  ),
                 ),
                 ElevatedButton(
                   onPressed: _addNote,
-                  child: const Text('Lisää'),
+                  child: const Text('Tallenna'),
                 ),
                 StreamBuilder(
                   stream: _firestore
