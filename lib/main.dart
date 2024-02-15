@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blueGrey)
             .copyWith(secondary: Colors.pinkAccent),
-        scaffoldBackgroundColor: Colors.blueGrey,
+        scaffoldBackgroundColor: Colors.white70,
       ),
       initialRoute:
           FirebaseAuth.instance.currentUser == null ? '/sign-in' : '/main-view',
