@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -38,7 +38,6 @@ class _MyHomePageState extends State<MyHomePage> {
     String noteText = _noteController.text.trim();
     if (noteText.isNotEmpty && _user != null) {
       try {
-        BuildContext currentContext = context;
         String userName = generateUsernameFromEmail(_user!.email!);
         await _user!.updateDisplayName(userName);
 
@@ -51,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
         _noteController.clear();
 
-        ScaffoldMessenger.of(currentContext).showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Muistilapun lisäys onnistui'),
             duration: Duration(seconds: 2),
@@ -59,19 +58,35 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       } catch (e) {
         print('Virhe muistilapun lisäyksessä: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Virhe lisättäessä muistilappua. Yritä uudelleen.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
       }
     }
   }
 
   void _deleteNote(String noteId, String userId) {
     if (_user != null && userId == _user!.uid) {
-      _firestore.collection('muistilaput').doc(noteId).delete();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Muistilapun poistaminen onnistui'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+      try {
+        _firestore.collection('muistilaput').doc(noteId).delete();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Muistilapun poistaminen onnistui'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } catch (e) {
+        print('Virhe muistilapun poistamisessa: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Virhe poistettaessa muistilappua. Yritä uudelleen.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -153,16 +168,27 @@ class _MyHomePageState extends State<MyHomePage> {
       _firestore.collection('muistilaput').doc(noteId).get().then((document) {
         if (document.exists) {
           if (_user!.uid == document.data()!['userId']) {
-            _firestore.collection('muistilaput').doc(noteId).update({
-              'teksti': newText,
-              'timestamp': FieldValue.serverTimestamp(),
-            });
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Muistilapun muokkaus onnistui'),
-                duration: Duration(seconds: 2),
-              ),
-            );
+            try {
+              _firestore.collection('muistilaput').doc(noteId).update({
+                'teksti': newText,
+                'timestamp': FieldValue.serverTimestamp(),
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Muistilapun muokkaus onnistui'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            } catch (e) {
+              print('Virhe muistilapun muokkauksessa: $e');
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content:
+                      Text('Virhe muokattaessa muistilappua. Yritä uudelleen.'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            }
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -174,6 +200,12 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       }).catchError((error) {
         print('Virhe muistilapun haussa: $error');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Virhe haettaessa muistilappua. Yritä uudelleen.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
       });
     }
   }
