@@ -47,7 +47,7 @@ dependencies:
   image_gallery_saver: ^2.0.3
   device_info_plus: ^9.1.2
   shake: ^2.2.0
-  share: ^2.0.4
+  share_plus: ^3.0.4
 
 dependency_overrides:
   sensors_plus: ^4.0.2
