@@ -8,7 +8,7 @@ Kirjautumissivulla voi luoda käyttäjätunnuksen ja salasanan.
 Sovelluksesta löytyy:
 
 ## Muistilaput
-  - Käyttäjä voi lisätä muistilappuja, jotka tallentuvat Firebasen tietokantaan. Käyttäjä voi myös muokata ja poistaa niitä. Muut käyttäjät näkevät toisten tekemät muistilaput. 
+  - Käyttäjä voi lisätä muistilappuja, jotka tallentuvat Firebasen tietokantaan. Käyttäjä voi myös muokata, poistaa ja jakaa muistilappuja eteenpäin.
 
 ## Kamera
   - Yksinkertainen kamera, jolla voi tallentaa kuvan paikallisesti laitteelle.
