@@ -53,7 +53,7 @@ Jouduin kuitenkin tekemään joitain muutoksia kameran etsintään. Muokkasin my
 
 ## Shaker – Henri Hämäläinen
 Näkymän ideana on vaihtaa taustaväriä hyödyntämällä puhelimen liiketunnistinta. Käyttäjä avaa Shaker-näkymän ja heiluttaa puhelinta, jolloin taustaväri muuttuu. Väri määräytyy Material colorsin primaries-muuttujan mukaan, johon on määritetty perusvärit (pois lukien harmaa).
-### Käytety paketit:
+### Käytetyt paketit:
 -	**material.dart**: Materiaalipaketti
 -	**shake.dart**: Havaitsee puhelimen liikkeen
 -	**sensors_plus**: Puhelimen antureiden hyödyntäminen (kiihtyvyysanturi, gyroskooppi, magnetometri)
