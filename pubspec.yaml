@@ -49,7 +49,7 @@ dependencies:
   shake: ^2.2.0
   share_plus: ^7.2.2
 
-depedency_overrides:
+dependency_overrides:
   sensors_plus: ^4.0.2
 
 dev_dependencies:
