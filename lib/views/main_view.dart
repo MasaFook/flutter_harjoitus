@@ -13,7 +13,7 @@ class MainView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: const Text('App Name'),
+            title: const Text('Harkka-appi'),
             backgroundColor: Theme.of(context).primaryColor,
             actions: [
               IconButton(
