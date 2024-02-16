@@ -3,6 +3,8 @@
 Mobiilisovelluskehitys-kurssin harjoitustyö
 
 Harjoitustyössä luotu yksinkertainen sovellus, johon on hyödynnetty Firebasen kirjautumista.
+Päänäkymästä voi luoda käyttäjätunnuksen ja salasanan.
+
 Sovelluksesta löytyy:
 
 ## Muistilaput
