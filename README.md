@@ -3,8 +3,8 @@
 
 Harjoitustyönä tehty yksinkertainen sovellus, jossa on erilaisia toiminnallisuuksia. Toiminnallisuudet ovat muistilaput, kamera ja shaker. Sovellus hyödyntää Firebasea kirjautumiseen ja käyttäjien tunnistamiseen.
 
-## Main_view näkymä – Matti Koskinen
-Main_view on käyttöliittymän perusnäkymä, kun käyttäjä on kirjautunut sisään. Sieltä käyttäjä pystyy navigoimaan kolmen eri sovelluksen ja oman profiilin välillä.
+## main_view näkymä – Matti Koskinen
+main_view on käyttöliittymän perusnäkymä, kun käyttäjä on kirjautunut sisään. Sieltä käyttäjä pystyy navigoimaan kolmen eri sovelluksen ja oman profiilin välillä.
 ### Käytetyt paketit:
 -	**camera**: Plugin kameran käyttöön. käytetään camera sovellukseen siirtymisessä, kun etsitään kamera valmiiksi.
 -	**flutter/material**: Flutterin materiaalipaketti.
