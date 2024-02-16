@@ -12,23 +12,22 @@ class MainView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('App Name'),
-        backgroundColor: Theme.of(context).primaryColor,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/profile');
-            },
-            icon: const Icon(Icons.person)),
-        ]),
+        appBar: AppBar(
+            title: const Text('App Name'),
+            backgroundColor: Theme.of(context).primaryColor,
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/profile');
+                  },
+                  icon: const Icon(Icons.person)),
+            ]),
         body: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color.fromARGB(255, 100, 130, 145), Colors.white]
-            ),
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color.fromARGB(255, 100, 130, 145), Colors.white]),
           ),
           child: Center(
             child: Column(
@@ -42,10 +41,10 @@ class MainView extends StatelessWidget {
                   onPressed: () async {
                     WidgetsFlutterBinding.ensureInitialized();
                     await availableCameras().then((value) => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                          TakePictureScreen(camera: value))));
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                TakePictureScreen(camera: value))));
                   },
                 ),
                 IconButton(
@@ -54,9 +53,9 @@ class MainView extends StatelessWidget {
                   color: const Color(0xFF000000),
                   onPressed: () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const MyHomePage()));
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MyHomePage()));
                   },
                 ),
                 IconButton(
@@ -65,9 +64,9 @@ class MainView extends StatelessWidget {
                   color: const Color(0xFF000000),
                   onPressed: () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Shaker()));
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Shaker()));
                   },
                 ),
               ],
@@ -78,10 +77,9 @@ class MainView extends StatelessWidget {
           color: const Color.fromARGB(255, 255, 255, 255),
           elevation: 0,
           height: 70,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              IconButton(
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
+            IconButton(
               icon: const Icon(Icons.arrow_drop_up_outlined),
               iconSize: 48.0,
               color: const Color(0xFF000000),
@@ -93,25 +91,35 @@ class MainView extends StatelessWidget {
                     return const SizedBox(
                       height: 130,
                       width: double.infinity,
-                      child: Column(
-                        children: [
-                          Text('Tekijät:',style: TextStyle(fontWeight: FontWeight.bold),),
-                          Text('Sami',style: TextStyle(fontWeight: FontWeight.bold),),
-                          Text('Henri',style: TextStyle(fontWeight: FontWeight.bold),),
-                          Text('Matti',style: TextStyle(fontWeight: FontWeight.bold),),
-                        ],
+                      child: Padding(
+                        padding: EdgeInsets.all(24),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Tekijät:',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              'Sami: Firebase, muistilaput',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              'Henri: Shaker, UI',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              'Matti: Kamera, UI',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
                 );
               },
             )
-          ]
-        ),
-      )
-    );
+          ]),
+        ));
   }
 }
-
-
-
