@@ -10,7 +10,7 @@ main_view on käyttöliittymän perusnäkymä, kun käyttäjä on kirjautunut si
 -	**flutter/material**: Flutterin materiaalipaketti.
 Visuaalinen toteutus on omaa käsialaa, vinkkejä etsin netistä asetteluun. Henri Hämäläinen oli loppuviimeistelyssä mukana ideoimassa ratkaisuja.
 
-## Muistilappu-näkymä (tehnyt Sami Rautalahti)
+## Muistilappu-näkymä - Sami Rautalahti
 Muistilappu-sovellus on muistiinpanosovellus, joka tarjoaa tavan luoda, tallentaa, hallita ja jakaa muistiinpanoja. Sovellus käyttää Firebase Authenticationia ja Cloud Firestorea käyttäjien autentikointiin ja muistilappujen tallentamiseen tietokantaan.
 Kirjautunut käyttäjä voi tehdä uusia muistilappuja. Käyttäjän sähköpostiosoitteen alkuosasta muodostuu käyttäjätunnus, joka näkyy kussakin muistilapussa “tekijä:”-kohdassa.  Kukin käyttäjä voi muokata, poistaa tai jakaa eteenpäin (tapahtuu share-toiminnolla, joka avaa valikon eri tavoista, joilla viesti voidaan jakaa käytetyn laitteen sovellusten kautta) omia lappujaan. Muistilapun muokkaaminen, poistaminen tai jakaminen perustuu Firestore-tietokannassa määrättyihin sääntöihin. Laput näkyvät pastellivärisissä korteissa listana allekkain, joten ne erottuvat helposti ja ovat selkeä lukea sekä selata.
 ### Sovelluksen käytetyt paketit ja palvelut:
