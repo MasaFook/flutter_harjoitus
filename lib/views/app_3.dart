@@ -11,7 +11,7 @@ class Shaker extends StatefulWidget {
 
 class ShakerState extends State<Shaker> {
   late ShakeDetector _shakeDetector;
-  Color _backgroundColor = const Color.fromARGB(255, 255, 255, 255);
+  Color _backgroundColor = const Color.fromARGB(255, 100, 130, 145);
 
   @override
   void initState() {

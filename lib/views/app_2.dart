@@ -221,127 +221,137 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Muistilaput'),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-      body: _user != null
-          ? Column(
-              children: [
-                TextField(
-                  controller: _noteController,
-                  focusNode: _noteFocusNode,
-                  decoration: InputDecoration(
-                    labelText: 'Kirjoita haluamasi teksti tähän',
-                    suffixIcon: AnimatedBuilder(
-                      animation: _noteFocusNode,
-                      builder: (context, child) {
-                        return Icon(
-                          Icons.edit,
-                          color: _noteFocusNode.hasFocus
-                              ? Colors.blue
-                              : Colors.grey,
+        appBar: AppBar(
+          title: const Text('Muistilaput'),
+          backgroundColor: Theme.of(context).primaryColor,
+        ),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color.fromARGB(255, 100, 130, 145), Colors.white],
+            ),
+          ),
+          child: _user != null
+              ? Column(
+                  children: [
+                    TextField(
+                      controller: _noteController,
+                      focusNode: _noteFocusNode,
+                      decoration: InputDecoration(
+                        labelText: 'Kirjoita haluamasi teksti tähän',
+                        suffixIcon: AnimatedBuilder(
+                          animation: _noteFocusNode,
+                          builder: (context, child) {
+                            return Icon(
+                              Icons.edit,
+                              color: _noteFocusNode.hasFocus
+                                  ? Colors.blue
+                                  : Colors.grey,
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: _addNote,
+                      child: const Text('Tallenna'),
+                    ),
+                    StreamBuilder(
+                      stream: _firestore
+                          .collection('muistilaput')
+                          .where(
+                            'userId',
+                            isEqualTo: _user!.uid,
+                          ) // Näytetään vain käyttäjän omat muistilaput
+                          .snapshots(),
+                      builder: (context,
+                          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                              snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        }
+
+                        if (!snapshot.hasData ||
+                            snapshot.data == null ||
+                            snapshot.data!.docs.isEmpty) {
+                          return const Text('Ei muistilappuja');
+                        }
+
+                        var notes = snapshot.data!.docs;
+
+                        return Expanded(
+                          child: ListView.builder(
+                            itemCount: notes.length,
+                            itemBuilder: (context, index) {
+                              var note = notes[index];
+                              final pastelColor =
+                                  pastelColors[index % pastelColors.length];
+
+                              // Tarkista, onko käyttäjä alkuperäisen muistiinpanon tekijä
+                              bool isNoteCreator = _user!.uid == note['userId'];
+
+                              return Card(
+                                color: pastelColor,
+                                child: ListTile(
+                                  title: Text(
+                                    note['teksti'],
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    'Tekijä: ${note['userName'] ?? 'N/A'}',
+                                    style: const TextStyle(
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  ),
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      // Muokkauskuvake
+                                      if (isNoteCreator)
+                                        IconButton(
+                                          icon: const Icon(Icons.edit),
+                                          onPressed: () {
+                                            _showEditDialog(
+                                                note.id, note['teksti']);
+                                          },
+                                        ),
+                                      // Poistokuvake
+                                      if (isNoteCreator)
+                                        IconButton(
+                                          icon: const Icon(Icons.delete),
+                                          onPressed: () {
+                                            _deleteNote(
+                                                note.id, note['userId']);
+                                          },
+                                        ),
+                                      if (isNoteCreator)
+                                        IconButton(
+                                          icon: const Icon(Icons.share),
+                                          onPressed: () {
+                                            _shareNote(
+                                                note.id, note.data()['teksti']);
+                                          },
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         );
                       },
                     ),
-                  ),
+                  ],
+                )
+              : const Center(
+                  child: CircularProgressIndicator(),
                 ),
-                ElevatedButton(
-                  onPressed: _addNote,
-                  child: const Text('Tallenna'),
-                ),
-                StreamBuilder(
-                  stream: _firestore
-                      .collection('muistilaput')
-                      .where(
-                        'userId',
-                        isEqualTo: _user!.uid,
-                      ) // Näytetään vain käyttäjän omat muistilaput
-                      .snapshots(),
-                  builder: (context,
-                      AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                          snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    }
-
-                    if (!snapshot.hasData ||
-                        snapshot.data == null ||
-                        snapshot.data!.docs.isEmpty) {
-                      return const Text('Ei muistilappuja');
-                    }
-
-                    var notes = snapshot.data!.docs;
-
-                    return Expanded(
-                      child: ListView.builder(
-                        itemCount: notes.length,
-                        itemBuilder: (context, index) {
-                          var note = notes[index];
-                          final pastelColor =
-                              pastelColors[index % pastelColors.length];
-
-                          // Tarkista, onko käyttäjä alkuperäisen muistiinpanon tekijä
-                          bool isNoteCreator = _user!.uid == note['userId'];
-
-                          return Card(
-                            color: pastelColor,
-                            child: ListTile(
-                              title: Text(
-                                note['teksti'],
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16.0,
-                                ),
-                              ),
-                              subtitle: Text(
-                                'Tekijä: ${note['userName'] ?? 'N/A'}',
-                                style: const TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                ),
-                              ),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  // Muokkauskuvake
-                                  if (isNoteCreator)
-                                    IconButton(
-                                      icon: const Icon(Icons.edit),
-                                      onPressed: () {
-                                        _showEditDialog(
-                                            note.id, note['teksti']);
-                                      },
-                                    ),
-                                  // Poistokuvake
-                                  if (isNoteCreator)
-                                    IconButton(
-                                      icon: const Icon(Icons.delete),
-                                      onPressed: () {
-                                        _deleteNote(note.id, note['userId']);
-                                      },
-                                    ),
-                                  if (isNoteCreator)
-                                    IconButton(
-                                      icon: const Icon(Icons.share),
-                                      onPressed: () {
-                                        _shareNote(
-                                            note.id, note.data()['teksti']);
-                                      },
-                                    ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ],
-            )
-          : const Center(
-              child: CircularProgressIndicator(),
-            ),
-    );
+        ));
   }
 }

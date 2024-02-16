@@ -48,6 +48,8 @@ dependencies:
   device_info_plus: ^9.1.2
   shake: ^2.2.0
   share_plus: ^7.2.2
+
+depedency_overrides:
   sensors_plus: ^4.0.2
 
 dev_dependencies:
