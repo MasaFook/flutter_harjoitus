@@ -1,16 +1,15 @@
-# flutter_harjoitus
+# Harkka-appi
 
-A new Flutter project.
+Mobiilisovelluskehitys-kurssin harjoitustyö
 
-## Getting Started
+Harjoitustyössä luotu yksinkertainen sovellus, johon on hyödynnetty Firebasen kirjautumista.
+Sovelluksesta löytyy:
 
-This project is a starting point for a Flutter application.
+## Muistilaput
+  - Käyttäjä voi lisätä muistilappuja, jotka tallentuvat Firebasen tietokantaan. Käyttäjä voi myös muokata ja poistaa niitä. Muut käyttäjät näkevät toisten tekemät muistilaput. 
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Kamera
+  - Yksinkertainen kamera, jolla voi tallentaa kuvan paikallisesti laitteelle.
+    
+## Shaker
+  - Näkymä, jonka taustaväri vaihtuu, kun käyttäjä heiluttaa laitetta
